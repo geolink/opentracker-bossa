@@ -1,4 +1,4 @@
-BOSSA 1.4 for Arduino
+BOSSA 1.5 for OpenTracker
 
 This version of BOSSA is a fork of the original project and contains some
 patches specific for the Arduino products that are unlike to be accepted
@@ -9,14 +9,16 @@ The original software is developed by Scott Shumate and can be found here:
 http://www.shumatech.com/web/products/bossa
 
 
+BOSSA 1.5-opentracker
+---------------------
+
+* Added support for SAM3A (auto-reset)
+* Fixed reset after setting Security Bit
+
 BOSSA 1.4-arduino
 -----------------
 
 * Added support for SAMD21 chip
-
-BOSSA 1.4-opentracker
-
-* Added support for SAM3A (auto-reset)
 
 BOSSA 1.2
 ---------

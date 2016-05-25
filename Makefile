@@ -3,7 +3,7 @@
 # 
 # Version
 #
-VERSION=1.4-opentracker
+VERSION=1.5-opentracker
 WXVERSION=3.0
 
 #
