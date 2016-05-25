@@ -51,7 +51,7 @@ using namespace std;
 
 #define min(a, b)   ((a) < (b) ? (a) : (b))
 
-Samba::Samba() : _debug(false), _isUsb(false)
+Samba::Samba() : _chipId(0), _debug(false), _isUsb(false)
 {
 }
 
@@ -63,7 +63,6 @@ bool
 Samba::init()
 {
     uint8_t cmd[3];
-    uint32_t cid;
 
     _port->timeout(TIMEOUT_QUICK);
 
@@ -98,7 +97,7 @@ Samba::init()
     // Read the chip ID
     try
     {
-        cid = chipId();
+        chipId();
     }
     catch (SambaError)
     {
@@ -108,9 +107,9 @@ Samba::init()
     _port->timeout(TIMEOUT_NORMAL);
 
     if (_debug)
-        printf("chipId=%#08x\n", cid);
+        printf("chipId=%#08x\n", _chipId);
 
-    if (getChipArchitecture(cid) != Unsupported)
+    if (getChipArchitecture(_chipId) != Unsupported)
       return true;
 
     return false;
@@ -530,13 +529,18 @@ Samba::version()
 uint32_t
 Samba::chipId()
 {
+    // use cached value if present
+    if (_chipId != 0)
+        return _chipId;
+    
     // Read the ARM reset vector
     uint32_t vector = readWord(0x0);
 
     // If the vector is a ARM7TDMI branch, then assume Atmel SAM7 registers
     if ((vector & 0xff000000) == 0xea000000)
     {
-        return readWord(0xfffff240);
+        _chipId = readWord(0xfffff240);
+        return _chipId;
     }
 
     // Else use the Atmel SAM3 or SAM4 or M0+ registers
@@ -547,35 +551,23 @@ Samba::chipId()
     // Check if it is Cortex M0+
     if (part_no == 0xC600)
     {
-        return readWord(0x41002018); // DSU_DID register
+        _chipId = readWord(0x41002018); // DSU_DID register
+        return _chipId;
     }
 
     // Else assume M3 or M4
-    uint32_t cid = readWord(0x400e0740);
-    if (cid == 0)
-        cid = readWord(0x400e0940);
-    return cid;
+    _chipId = readWord(0x400e0740);
+    if (_chipId == 0)
+        _chipId = readWord(0x400e0940);
+    return _chipId;
 }
 
 void
 Samba::reset(void)
 {
-    uint32_t chipId;
-
     printf("CPU reset.\n");
 
-    // Read the chip ID
-    try
-    {
-        chipId = Samba::chipId();
-    }
-    catch (SambaError)
-    {
-        printf("Reset failed.\n");
-        return;
-    }
-
-    switch (getChipArchitecture(chipId))
+    switch (getChipArchitecture(_chipId))
     {
       case SAMD20:
       case SAMD21:

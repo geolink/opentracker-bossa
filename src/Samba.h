@@ -96,6 +96,7 @@ private:
         SAMD21
     };
 
+    uint32_t _chipId;
     bool _debug;
     bool _isUsb;
     SerialPort::Ptr _port;
