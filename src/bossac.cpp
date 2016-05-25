@@ -365,17 +365,17 @@ main(int argc, char* argv[])
             flash->setBor(config.borArg);
         }
 
-        if (config.security)
-        {
-            printf("Set security\n");
-            flash->setSecurity();
-        }
-
         if (config.lock)
             flasher.lock(config.lockArg, true);
 
         if (config.info)
             flasher.info(samba);
+
+        if (config.security)
+        {
+            printf("Set security\n");
+            flash->setSecurity();
+        }
 
         if (config.reset)
             samba.reset();
