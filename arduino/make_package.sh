@@ -17,7 +17,7 @@ then
 	make bin/bossac -j4
 	strip bin/bossac
 	GCC_ARCH=`gcc -v -arch i386 2>&1 | awk '/Target/ { print $2 }'`
-elif [[ x$OS == xMINGW32 ]];
+elif [[ x$OS == xMINGW32 ]] || [[ x$OS == xMSYS_NT ]];
 then
 	# Windows
 	make bin/bossac.exe -j4
