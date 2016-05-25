@@ -186,6 +186,7 @@ EefcFlash::setSecurity()
 {
     waitFSR();
     writeFCR0(EEFC_FCMD_SGPB, 0);
+    usleep(10000);
 }
 
 bool
